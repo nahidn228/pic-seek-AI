@@ -98,6 +98,9 @@ const Create = () => {
       .then((res) => res.arrayBuffer())
       .then((buffer) => {
         console.log(buffer);
+        const blob = new Blob([buffer], { type: "image/jpeg" });
+        const url = URL.createObjectURL(blob);
+        console.log(url);
       })
       .catch((err) => console.log(err));
   };
