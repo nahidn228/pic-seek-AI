@@ -1,7 +1,7 @@
 import { useContext } from "react";
+import Swal from "sweetalert2";
 import PageTitle from "../components/shared/PageTitle";
 import { AuthContext } from "../provider/AuthProvider";
-import Swal from "sweetalert2";
 
 const Create = () => {
   const { user, login } = useContext(AuthContext);
@@ -43,14 +43,7 @@ const Create = () => {
       return true;
     }
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!checkUser()) return;
-
-    const form = e.target;
-    const prompt = form.prompt.value;
-    const category = form.category.value;
+  const validate = (prompt, category) => {
     // validation starts
     if (!category) {
       Swal.fire(
@@ -58,15 +51,15 @@ const Create = () => {
         "Select a Category from the dropdown",
         "error"
       );
-      return;
+      return false;
     }
     if (!prompt) {
       Swal.fire("Write a Prompt", "Write a prompt in the input", "error");
-      return;
+      return false;
     }
     if (!prompt) {
       Swal.fire("Write a Prompt", "Write a prompt in the input", "error");
-      return;
+      return false;
     }
     if (prompt.trim().length < 20) {
       Swal.fire(
@@ -74,14 +67,39 @@ const Create = () => {
         "make your prompt bigger (minimum 20 character)",
         "error"
       );
-      return;
+      return false;
     }
+    return true;
     //validation End
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const prompt = form.prompt.value;
+    const category = form.category.value;
+
+    if (!checkUser()) return;
+    if (!validate(prompt, category)) return;
 
     console.log({ prompt, category });
     const finalPrompt = `imagine a ${category} : ${prompt}`;
     console.log(finalPrompt);
-    return;
+    const myForm = new FormData();
+    myForm.append("prompt", "shot of vaporwave fashion dog in miami");
+
+    fetch("https://clipdrop-api.co/text-to-image/v1", {
+      method: "POST",
+      headers: {
+        "x-api-key": import.meta.env.VITE_CD_KEY,
+      },
+      body: myForm,
+    })
+      .then((res) => res.arrayBuffer())
+      .then((buffer) => {
+        console.log(buffer);
+      })
+      .catch((err) => console.log(err));
   };
   return (
     <div>
