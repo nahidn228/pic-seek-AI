@@ -4,6 +4,7 @@ import PageTitle from "../components/shared/PageTitle";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Create = () => {
+  const imagebb_API = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`
   const { user, login } = useContext(AuthContext);
   const options = [
     "painting",
@@ -72,7 +73,27 @@ const Create = () => {
     return true;
     //validation End
   };
-  const handleSubmit = (e) => {
+
+  const getImageBuffer = async (prompt, category) => {
+    const finalPrompt = `imagine a ${category} : ${prompt}`;
+    console.log(finalPrompt);
+    const myForm = new FormData();
+    myForm.append("prompt", finalPrompt);
+
+    const res = await fetch("https://clipdrop-api.co/text-to-image/v1", {
+      method: "POST",
+      headers: {
+        "x-api-key": import.meta.env.VITE_CD_KEY,
+      },
+      body: myForm,
+    });
+    const buffer = await res.arrayBuffer();
+    return buffer;
+  };
+
+  const generateImageUrl = async (buffer) => {};
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const form = e.target;
@@ -83,26 +104,11 @@ const Create = () => {
     if (!validate(prompt, category)) return;
 
     console.log({ prompt, category });
-    const finalPrompt = `imagine a ${category} : ${prompt}`;
-    console.log(finalPrompt);
-    const myForm = new FormData();
-    myForm.append("prompt", "shot of vaporwave fashion dog in miami");
+    const buffer = await getImageBuffer(prompt, category);
 
-    fetch("https://clipdrop-api.co/text-to-image/v1", {
-      method: "POST",
-      headers: {
-        "x-api-key": import.meta.env.VITE_CD_KEY,
-      },
-      body: myForm,
-    })
-      .then((res) => res.arrayBuffer())
-      .then((buffer) => {
-        console.log(buffer);
-        const blob = new Blob([buffer], { type: "image/jpeg" });
-        const url = URL.createObjectURL(blob);
-        console.log(url);
-      })
-      .catch((err) => console.log(err));
+    const blob = new Blob([buffer], { type: "image/jpeg" });
+    const url = URL.createObjectURL(blob);
+    console.log(url);
   };
   return (
     <div>
