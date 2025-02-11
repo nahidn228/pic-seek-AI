@@ -4,7 +4,9 @@ import PageTitle from "../components/shared/PageTitle";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Create = () => {
-  const imagebb_API = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`
+  const imgBB_API = `https://api.imgbb.com/1/upload?key=${
+    import.meta.env.VITE_IMGBB_KEY
+  }`;
   const { user, login } = useContext(AuthContext);
   const options = [
     "painting",
@@ -91,7 +93,16 @@ const Create = () => {
     return buffer;
   };
 
-  const generateImageUrl = async (buffer) => {};
+  const generateImageUrl = async (buffer) => {
+    const formData = new FormData();
+    formData.append("image", new Blob([buffer], { type: "image/jpeg" }));
+    const res = await fetch(imgBB_API, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
+    return data;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,10 +116,12 @@ const Create = () => {
 
     console.log({ prompt, category });
     const buffer = await getImageBuffer(prompt, category);
+    const data = await generateImageUrl(buffer);
+    console.log(data);
 
-    const blob = new Blob([buffer], { type: "image/jpeg" });
-    const url = URL.createObjectURL(blob);
-    console.log(url);
+    // const blob = new Blob([buffer], { type: "image/jpeg" });
+    // const url = URL.createObjectURL(blob);
+    // console.log(url);
   };
   return (
     <div>
