@@ -93,9 +93,13 @@ const Create = () => {
     return buffer;
   };
 
-  const generateImageUrl = async (buffer) => {
+  const generateImageUrl = async (buffer, prompt) => {
     const formData = new FormData();
-    formData.append("image", new Blob([buffer], { type: "image/jpeg" }));
+    formData.append(
+      "image",
+      new Blob([buffer], { type: "image/jpeg" }),
+      `${prompt}.jpg`
+    );
     const res = await fetch(imgBB_API, {
       method: "POST",
       body: formData,
@@ -116,7 +120,7 @@ const Create = () => {
 
     console.log({ prompt, category });
     const buffer = await getImageBuffer(prompt, category);
-    const data = await generateImageUrl(buffer);
+    const data = await generateImageUrl(buffer, prompt);
     console.log(data);
 
     // const blob = new Blob([buffer], { type: "image/jpeg" });
