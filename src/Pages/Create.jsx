@@ -87,7 +87,7 @@ const Create = () => {
     console.log({ prompt, category });
 
     axios
-      .post("http://localhost:3000/create-image", {
+      .post("http://localhost:3000/api/v1/image/create", {
         email: user?.email,
         prompt,
         username: user?.displayName || "Anonymous",
