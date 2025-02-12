@@ -1,12 +1,10 @@
+import axios from "axios";
 import { useContext } from "react";
 import Swal from "sweetalert2";
 import PageTitle from "../components/shared/PageTitle";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Create = () => {
-  const imgBB_API = `https://api.imgbb.com/1/upload?key=${
-    import.meta.env.VITE_IMGBB_KEY
-  }`;
   const { user, login } = useContext(AuthContext);
   const options = [
     "painting",
@@ -76,38 +74,6 @@ const Create = () => {
     //validation End
   };
 
-  const getImageBuffer = async (prompt, category) => {
-    const finalPrompt = `imagine a ${category} : ${prompt}`;
-    console.log(finalPrompt);
-    const myForm = new FormData();
-    myForm.append("prompt", finalPrompt);
-
-    const res = await fetch("https://clipdrop-api.co/text-to-image/v1", {
-      method: "POST",
-      headers: {
-        "x-api-key": import.meta.env.VITE_CD_KEY,
-      },
-      body: myForm,
-    });
-    const buffer = await res.arrayBuffer();
-    return buffer;
-  };
-
-  const generateImageUrl = async (buffer, prompt) => {
-    const formData = new FormData();
-    formData.append(
-      "image",
-      new Blob([buffer], { type: "image/jpeg" }),
-      `${prompt}.jpg`
-    );
-    const res = await fetch(imgBB_API, {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json();
-    return data;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -119,9 +85,18 @@ const Create = () => {
     if (!validate(prompt, category)) return;
 
     console.log({ prompt, category });
-    const buffer = await getImageBuffer(prompt, category);
-    const data = await generateImageUrl(buffer, prompt);
-    console.log(data);
+
+    axios
+      .post("http://localhost:3000/create-image", {
+        email: user?.email,
+        prompt,
+        username: user?.displayName || "Anonymous",
+        userImg:
+          user?.photoUrl ||
+          "https://img.icons8.com/?size=100&id=4kuCnjaqo47m&format=png&color=000000",
+        category,
+      })
+      .then((res) => console.log(res.data));
 
     // const blob = new Blob([buffer], { type: "image/jpeg" });
     // const url = URL.createObjectURL(blob);
