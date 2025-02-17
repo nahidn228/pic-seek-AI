@@ -28,8 +28,9 @@ const AppLayout = () => {
       <main className="min-h-[calc(100svh-125px)]">
         <Outlet></Outlet>
       </main>
-
-      <Footer />
+      <footer>
+        <Footer />
+      </footer>
 
       {/* <footer className="footer footer-center bg-cyan-50 glass text-base-content p-4">
         <aside>
