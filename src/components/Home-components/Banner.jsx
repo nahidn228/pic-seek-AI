@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 const Banner = () => {
   return (
     <div className="hero bg-gradient-to-b lg:bg-gradient-to-l from-cyan-100 min-h-screen">
@@ -18,7 +19,9 @@ const Banner = () => {
             Lets convert your creativity in the next level with Pic-Seek-AI.🎯
             Find, Analyze & Explore Images Smarter with AI!
           </p>
-          <button className="btn btn-primary">Get Started</button>
+          <Link to="/create" className="btn btn-primary">
+            Get Started
+          </Link>
         </div>
       </div>
     </div>

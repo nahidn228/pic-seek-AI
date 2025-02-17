@@ -5,7 +5,7 @@ import PageTitle from "./../components/shared/PageTitle";
 const Creation = () => {
   const [images, setImages] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:3000/api/v1/image/all")
+    fetch("https://pic-seek-server-lake.vercel.app/api/v1/image/all")
       .then((res) => res.json())
       .then((data) => setImages(data));
   }, []);

@@ -11,15 +11,13 @@ const SingleImage = () => {
   const [image, setImage] = useState({});
   const { user } = useContext(AuthContext);
 
-  console.log(user.photoURL);
-
   // const [comments, setComments] = useState([]);
 
   const { data: comments = [], refetch } = useQuery({
     queryKey: ["comments"],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:3000/api/v1/comment/comment/${user?.email}/${id}`
+        `https://pic-seek-server-lake.vercel.app/api/v1/comment/comment/${user?.email}/${id}`
       );
       return res.data;
     },
@@ -39,20 +37,23 @@ const SingleImage = () => {
     };
 
     axios
-      .post("http://localhost:3000/api/v1/comment/create", document)
+      .post(
+        "https://pic-seek-server-lake.vercel.app/api/v1/comment/create",
+        document
+      )
       .then((res) => console.log(res.data));
     e.target.reset();
     refetch();
   };
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/v1/image/single/${id}`)
+    fetch(`https://pic-seek-server-lake.vercel.app/api/v1/image/single/${id}`)
       .then((res) => res.json())
       .then((data) => setImage(data));
 
     refetch();
     // axios
-    //   .get("http://localhost:3000/api/v1/comment/comments")
+    //   .get("https://pic-seek-server-lake.vercel.app/api/v1/comment/comments")
     //   .then((res) => setComments(res.data));
   }, [id, refetch]);
 

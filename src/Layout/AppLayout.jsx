@@ -1,8 +1,9 @@
-import { Outlet } from "react-router";
-import Navbar from "../components/shared/Navbar";
-import { AuthContext } from "../provider/AuthProvider";
 import { useContext } from "react";
 import Marquee from "react-fast-marquee";
+import { Outlet } from "react-router";
+import Footer from "../components/shared/Footer";
+import Navbar from "../components/shared/Navbar";
+import { AuthContext } from "../provider/AuthProvider";
 
 const AppLayout = () => {
   const { user } = useContext(AuthContext);
@@ -14,8 +15,8 @@ const AppLayout = () => {
           gradient={true}
           className="bg-primary text-base-100"
         >
-          Welcome Mr. {user?.displayName} 🐦‍🔥. Lets unleash the power of
-          PicSeek-AI
+          Welcome, Mr. {user?.displayName} 🐦‍🔥 ! Unleash the power of
+          PicSeek-AI. Crafted by Nahid Hasan.
         </Marquee>
       )}
       <header className="bg-gradient-to-t lg:bg-gradient-to-l from-cyan-100 ">
@@ -28,14 +29,18 @@ const AppLayout = () => {
         <Outlet></Outlet>
       </main>
 
-      <footer className="footer footer-center bg-cyan-50 glass text-base-content p-4">
+      <Footer />
+
+      {/* <footer className="footer footer-center bg-cyan-50 glass text-base-content p-4">
         <aside>
           <p>
-            Copyright © {new Date().getFullYear()} - All right reserved by ACME
-            Industries Ltd
+            Copyright © {new Date().getFullYear()} - All right reserved by{" "}
+            <a href="https://nahidhasan-portfolio.vercel.app/" target="_blank">
+              Nahid Hasan
+            </a>
           </p>
         </aside>
-      </footer>
+      </footer> */}
     </>
   );
 };
