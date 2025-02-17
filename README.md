@@ -8,6 +8,11 @@ Pick-Seek is an advanced AI-powered tool that can generate images, analyze image
 
 ---
 
+
+## Live Link
+[Visit Pic-Seek](https://ai-pic-seek.web.app/)
+
+
 ## Features
 
 - **Image Generation**: Create high-quality images based on textual prompts.
@@ -17,13 +22,26 @@ Pick-Seek is an advanced AI-powered tool that can generate images, analyze image
 
 ---
 
+## Tech Stack
+
+- **React**: Frontend library for building user interfaces.
+- **TailwindCSS**: Utility-first CSS framework for creating responsive designs.
+- **Backend**: Express.js, Node.js, MongoDB
+- **Vite**: Fast and optimized build tool for modern web apps.
+- **Axios**: HTTP client for making requests to the backend API.
+- **AI Integration**: Gemini API, Clipdrop API
+- **Data Management**: Tanstack Query
+- **React Router**: For navigation between pages.
+- **SweetAlert2**: For alert messages.
+- **Firebase**: For authentication and other backend services.
+
+---
+
 ## Let's Collaborate 😎
 
 ### 1. Clone This Project
 
-```bash
-git clone https://github.com/ferdouszihad/pic-seek-template.git
-```
+
 
 ### 2. Install all Dependencies
 
