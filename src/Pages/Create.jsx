@@ -1,10 +1,14 @@
 import axios from "axios";
 import { useContext } from "react";
+
+import { useNavigate } from "react-router-dom";
+
 import Swal from "sweetalert2";
 import PageTitle from "../components/shared/PageTitle";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Create = () => {
+  const navigate = useNavigate();
   const { user, login } = useContext(AuthContext);
   const options = [
     "painting",
@@ -44,6 +48,7 @@ const Create = () => {
       return true;
     }
   };
+
   const validate = (prompt, category) => {
     // validation starts
     if (!category) {
@@ -76,6 +81,35 @@ const Create = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const email = user?.email;
+    // Get the current time
+    const currentTime = new Date().getTime();
+    const userInfo = {
+      userEmail: email,
+      currentTime,
+    };
+
+    const lastClicked = localStorage.getItem("click");
+    const storedData = JSON.parse(lastClicked);
+
+    // console.log(storedData?.currentTime);
+
+    if (storedData) {
+      const timeDifference = currentTime - storedData?.currentTime;
+      const twentyFourHoursInMilliseconds = 24 * 60 * 60 * 1000;
+
+      if (
+        timeDifference < twentyFourHoursInMilliseconds &&
+        storedData?.userEmail == user?.email
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "You can't generate your AI-Generated Masterpiece  again within 24 hours.!",
+        });
+        return;
+      }
+    }
 
     const form = e.target;
     const prompt = form.prompt.value;
@@ -85,18 +119,41 @@ const Create = () => {
     if (!validate(prompt, category)) return;
 
     console.log({ prompt, category });
-
-    axios
-      .post("https://pic-seek-server-lake.vercel.app/api/v1/image/create", {
-        email: user?.email,
-        prompt,
-        username: user?.displayName || "Anonymous",
-        userImg:
-          user?.photoUrl ||
-          "https://img.icons8.com/?size=100&id=4kuCnjaqo47m&format=png&color=000000",
-        category,
-      })
-      .then((res) => console.log(res.data));
+    try {
+      axios
+        .post("https://pic-seek-server-lake.vercel.app/api/v1/image/create", {
+          email: user?.email,
+          prompt,
+          username: user?.displayName || "Anonymous",
+          userImg:
+            user?.photoUrl ||
+            "https://img.icons8.com/?size=100&id=4kuCnjaqo47m&format=png&color=000000",
+          category,
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.insertedId) {
+            localStorage.setItem("click", JSON.stringify(userInfo));
+            e.target.reset();
+            navigate(`/creation/${res.data?.insertedId}`);
+            Swal.fire({
+              title: "Your AI-Generated Masterpiece!",
+              text: "Crafted with precision, powered by imagination.",
+              imageUrl: `${res?.data?.url}`,
+              imageWidth: 400,
+              imageHeight: 200,
+              imageAlt: "Custom image",
+            });
+          }
+        });
+    } catch (err) {
+      console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: `${err.message}`,
+      });
+    }
 
     // const blob = new Blob([buffer], { type: "image/jpeg" });
     // const url = URL.createObjectURL(blob);
@@ -142,6 +199,7 @@ const Create = () => {
             <button className="btn join-item btn-primary">Create</button>
           </div>
         </form>
+        <div></div>
       </div>
     </div>
   );

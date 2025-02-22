@@ -3,6 +3,7 @@ import { BiHome } from "react-icons/bi";
 import { CiGrid31 } from "react-icons/ci";
 import { FcGoogle } from "react-icons/fc";
 import { GiBrain } from "react-icons/gi";
+import { BsChatLeft } from "react-icons/bs";
 
 import { Link, NavLink } from "react-router";
 import { AuthContext } from "../../provider/AuthProvider";
@@ -54,6 +55,15 @@ const Navbar = () => {
             >
               {" "}
               <CiGrid31 size={18} /> Creations
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to={"/creations"}
+              className="border rounded-full border-gray-200 shadow px-4 py-2 bg-base-100 flex items-center"
+            >
+              {" "}
+              <BsChatLeft size={16} /> Chat
             </NavLink>
           </li>
 

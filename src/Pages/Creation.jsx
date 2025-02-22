@@ -9,6 +9,7 @@ const Creation = () => {
       .then((res) => res.json())
       .then((data) => setImages(data));
   }, []);
+  console.log(images);
   return (
     <div>
       <PageTitle>All Creation</PageTitle>
@@ -17,7 +18,7 @@ const Creation = () => {
           <div key={img._id}>
             <div className="card card-compact bg-base-100 shadow-xl relative">
               <figure>
-                <img src={img.thumb_img} className="w-full" alt="Shoes" />
+                <img src={img.thumb_img} className="w-full" alt="image" />
               </figure>
 
               <Link
