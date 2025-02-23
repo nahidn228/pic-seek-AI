@@ -1,15 +1,17 @@
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
+import Loader from "../components/shared/Loader";
 import PageTitle from "../components/shared/PageTitle";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Create = () => {
   const navigate = useNavigate();
   const { user, login } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const options = [
     "Painting",
     "Animated-Image",
@@ -153,6 +155,8 @@ const Create = () => {
         title: "Oops...",
         text: `${err.message}`,
       });
+    } finally {
+      setLoading(false);
     }
 
     // const blob = new Blob([buffer], { type: "image/jpeg" });
@@ -199,7 +203,7 @@ const Create = () => {
             <button className="btn join-item btn-primary">Create</button>
           </div>
         </form>
-        <div></div>
+        <div>{loading ? <Loader /> : ""}</div>
       </div>
     </div>
   );
