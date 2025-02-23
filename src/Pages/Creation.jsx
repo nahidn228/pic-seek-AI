@@ -5,18 +5,18 @@ import PageTitle from "./../components/shared/PageTitle";
 
 const Creation = () => {
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     fetch("https://pic-seek-server-lake.vercel.app/api/v1/image/all")
       .then((res) => res.json())
       .then((data) => {
         setImages(data);
-        setLoading(false); // Data fetched, stop loading
+        setLoading(false); 
       })
       .catch((error) => {
         console.error("Error fetching images:", error);
-        setLoading(false); // Stop loading even if there's an error
+        setLoading(false); 
       });
   }, []);
 

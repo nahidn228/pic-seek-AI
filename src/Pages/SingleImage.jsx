@@ -3,13 +3,15 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { FaPaperPlane, FaRobot } from "react-icons/fa";
 import { useParams } from "react-router";
+import Loader from "../components/shared/Loader";
 import { AuthContext } from "../provider/AuthProvider";
 import PageTitle from "./../components/shared/PageTitle";
 
 const SingleImage = () => {
   const { id } = useParams();
-  const [image, setImage] = useState({});
   const { user } = useContext(AuthContext);
+  const [image, setImage] = useState({});
+  const [loading, setLoading] = useState(true);
 
   // const [comments, setComments] = useState([]);
 
@@ -35,7 +37,7 @@ const SingleImage = () => {
       imageId: id,
       comment,
     };
-
+    setLoading(true);
     axios
       .post(
         "https://pic-seek-server-lake.vercel.app/api/v1/comment/create",
@@ -44,12 +46,16 @@ const SingleImage = () => {
       .then((res) => console.log(res.data));
     e.target.reset();
     refetch();
+    setLoading(false);
   };
 
   useEffect(() => {
     fetch(`https://pic-seek-server-lake.vercel.app/api/v1/image/single/${id}`)
       .then((res) => res.json())
-      .then((data) => setImage(data));
+      .then((data) => {
+        setLoading(false);
+        setImage(data);
+      });
 
     refetch();
     // axios
@@ -73,6 +79,7 @@ const SingleImage = () => {
 
         {/* Comment Section */}
         <div className="max-w-2xl mx-auto p-4 bg-white rounded-lg shadow-lg max-h-[500px] overflow-y-auto">
+          {loading ? <Loader message={"Commenting"} /> : ""}
           {/* Comment List */}
           <div className="mt-4 space-y-4 border-b border-gray-300 pb-4">
             {comments?.map((comment, index) => (
@@ -80,6 +87,7 @@ const SingleImage = () => {
                 key={index}
                 className="flex flex-col gap-3 p-2 bg-gray-50 rounded-lg"
               >
+                {loading ? <Loader message={"Commenting"} /> : ""}
                 {/* User Comment */}
                 <div className="flex gap-3 items-center">
                   <div className="avatar">
