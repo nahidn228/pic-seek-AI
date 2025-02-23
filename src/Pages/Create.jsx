@@ -82,6 +82,7 @@ const Create = () => {
   };
 
   const handleSubmit = async (e) => {
+    
     e.preventDefault();
     const email = user?.email;
     // Get the current time
@@ -114,6 +115,7 @@ const Create = () => {
     }
 
     const form = e.target;
+   
     const prompt = form.prompt.value;
     const category = form.category.value;
 
@@ -121,7 +123,9 @@ const Create = () => {
     if (!validate(prompt, category)) return;
 
     console.log({ prompt, category });
+   
     try {
+      setLoading(true);
       axios
         .post("https://pic-seek-server-lake.vercel.app/api/v1/image/create", {
           email: user?.email,
@@ -133,6 +137,7 @@ const Create = () => {
           category,
         })
         .then((res) => {
+          setLoading(false);
           console.log(res.data);
           if (res.data.insertedId) {
             localStorage.setItem("click", JSON.stringify(userInfo));
@@ -203,7 +208,7 @@ const Create = () => {
             <button className="btn join-item btn-primary">Create</button>
           </div>
         </form>
-        <div>{loading ? <Loader /> : ""}</div>
+        <div>{loading ? <Loader message={"Generating your image..."} /> : ""}</div>
       </div>
     </div>
   );
