@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { FaSpinner } from "react-icons/fa";
 
-const Loader = ({ message }) => {
+const Loader = ({ message  }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-b lg:bg-gradient-to-l from-cyan-100 z-50">
       <div className="flex flex-col items-center p-6 bg-white rounded-2xl  shadow-2xl">

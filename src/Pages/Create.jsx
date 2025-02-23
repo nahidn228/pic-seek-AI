@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useContext, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
-
 import Swal from "sweetalert2";
 import Loader from "../components/shared/Loader";
 import PageTitle from "../components/shared/PageTitle";
@@ -11,7 +9,6 @@ import { AuthContext } from "../provider/AuthProvider";
 const Create = () => {
   const navigate = useNavigate();
   const { user, login } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
   const options = [
     "Painting",
     "Animated-Image",
@@ -20,6 +17,8 @@ const Create = () => {
     "Digital-Art",
     "Realistic-Image",
   ];
+
+  const [loading, setLoading] = useState(false);
 
   const checkUser = () => {
     if (!user) {
@@ -52,7 +51,6 @@ const Create = () => {
   };
 
   const validate = (prompt, category) => {
-    // validation starts
     if (!category) {
       Swal.fire(
         "Select Category",
@@ -65,27 +63,20 @@ const Create = () => {
       Swal.fire("Write a Prompt", "Write a prompt in the input", "error");
       return false;
     }
-    if (!prompt) {
-      Swal.fire("Write a Prompt", "Write a prompt in the input", "error");
-      return false;
-    }
     if (prompt.trim().length < 20) {
       Swal.fire(
         "Invalid Prompt",
-        "make your prompt bigger (minimum 20 character)",
+        "Make your prompt bigger (minimum 20 characters)",
         "error"
       );
       return false;
     }
     return true;
-    //validation End
   };
 
   const handleSubmit = async (e) => {
-    
     e.preventDefault();
     const email = user?.email;
-    // Get the current time
     const currentTime = new Date().getTime();
     const userInfo = {
       userEmail: email,
@@ -94,8 +85,6 @@ const Create = () => {
 
     const lastClicked = localStorage.getItem("click");
     const storedData = JSON.parse(lastClicked);
-
-    // console.log(storedData?.currentTime);
 
     if (storedData) {
       const timeDifference = currentTime - storedData?.currentTime;
@@ -108,26 +97,25 @@ const Create = () => {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "You can't generate your AI-Generated Masterpiece  again within 24 hours.!",
+          text: "You can't generate your AI-Generated Masterpiece again within 24 hours!",
         });
         return;
       }
     }
 
     const form = e.target;
-   
     const prompt = form.prompt.value;
     const category = form.category.value;
 
     if (!checkUser()) return;
     if (!validate(prompt, category)) return;
 
-    console.log({ prompt, category });
-   
+    setLoading(true); // Start loading
+
     try {
-      setLoading(true);
-      axios
-        .post("https://pic-seek-server-lake.vercel.app/api/v1/image/create", {
+      const res = await axios.post(
+        "https://pic-seek-server-lake.vercel.app/api/v1/image/create",
+        {
           email: user?.email,
           prompt,
           username: user?.displayName || "Anonymous",
@@ -135,24 +123,23 @@ const Create = () => {
             user?.photoUrl ||
             "https://img.icons8.com/?size=100&id=4kuCnjaqo47m&format=png&color=000000",
           category,
-        })
-        .then((res) => {
-          setLoading(false);
-          console.log(res.data);
-          if (res.data.insertedId) {
-            localStorage.setItem("click", JSON.stringify(userInfo));
-            e.target.reset();
-            navigate(`/creation/${res.data?.insertedId}`);
-            Swal.fire({
-              title: "Your AI-Generated Masterpiece!",
-              text: "Crafted with precision, powered by imagination.",
-              imageUrl: `${res?.data?.url}`,
-              imageWidth: 400,
-              imageHeight: 200,
-              imageAlt: "Custom image",
-            });
-          }
+        }
+      );
+
+      console.log(res.data);
+      if (res.data.insertedId) {
+        localStorage.setItem("click", JSON.stringify(userInfo));
+        e.target.reset();
+        navigate(`/creation/${res.data?.insertedId}`);
+        Swal.fire({
+          title: "Your AI-Generated Masterpiece!",
+          text: "Crafted with precision, powered by imagination.",
+          imageUrl: `${res?.data?.url}`,
+          imageWidth: 400,
+          imageHeight: 200,
+          imageAlt: "Custom image",
         });
+      }
     } catch (err) {
       console.log(err);
       Swal.fire({
@@ -161,24 +148,25 @@ const Create = () => {
         text: `${err.message}`,
       });
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading
     }
-
-    // const blob = new Blob([buffer], { type: "image/jpeg" });
-    // const url = URL.createObjectURL(blob);
-    // console.log(url);
   };
+
   return (
     <div>
       <PageTitle>🌱Let&apos;s Create 🐦‍🔥</PageTitle>
 
       <div className="w-11/12 mx-auto py-10">
         <div className="flex justify-center py-5">
-          <img
-            src="https://img.icons8.com/?size=96&id=8gR77jBNhfyz&format=png"
-            alt=""
-            className="animate-bounce"
-          />
+          {loading ? ( // Conditional rendering of loader
+            <Loader message={"Generating your image..."} />
+          ) : (
+            <img
+              src="https://img.icons8.com/?size=96&id=8gR77jBNhfyz&format=png"
+              alt=""
+              className="animate-bounce"
+            />
+          )}
         </div>
         <form
           onSubmit={handleSubmit}
@@ -189,7 +177,7 @@ const Create = () => {
               <input
                 name="prompt"
                 className="input w-full input-bordered join-item outline-none focus:outline-none focus:border-primary"
-                placeholder="Write , Whats on your Mind🧠🧠"
+                placeholder="Write, What's on your Mind 🧠🧠"
               />
             </div>
           </div>
@@ -208,7 +196,7 @@ const Create = () => {
             <button className="btn join-item btn-primary">Create</button>
           </div>
         </form>
-        <div>{loading ? <Loader message={"Generating your image..."} /> : ""}</div>
+        <div></div>
       </div>
     </div>
   );
