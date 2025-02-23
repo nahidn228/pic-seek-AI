@@ -11,12 +11,12 @@ const Create = () => {
   const navigate = useNavigate();
   const { user, login } = useContext(AuthContext);
   const options = [
-    "painting",
-    "animated-image",
-    "wallpaper",
-    "poster",
-    "digital-art",
-    "realistic-image",
+    "Painting",
+    "Animated-Image",
+    "Wallpaper",
+    "Poster",
+    "Digital-Art",
+    "Realistic-Image",
   ];
 
   const checkUser = () => {
