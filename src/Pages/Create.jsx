@@ -13,7 +13,7 @@ const Create = () => {
   const options = [
     "painting",
     "animated-image",
-    "walpaper",
+    "wallpaper",
     "poster",
     "digital-art",
     "realistic-image",
